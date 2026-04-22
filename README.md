@@ -4,6 +4,10 @@ A tabbed Übersicht widget displaying three classic Catholic prayers on the desk
 
 The Regina Cæli and Angelus are rendered in traditional Latin; the Memorare is shown in English.
 
+## Requirements
+
+**macOS only.** This widget runs inside [Übersicht](https://tracesof.net/uebersicht/), which is a native macOS app. It will not work on Windows or Linux.
+
 ## Features
 
 - **Three prayer tabs** — Regina Cæli, Angelus, Memorare.
