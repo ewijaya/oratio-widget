@@ -4,6 +4,16 @@ A tabbed Übersicht widget displaying three classic Catholic prayers on the desk
 
 The Regina Cæli and Angelus are rendered in traditional Latin; the Memorare is shown in English.
 
+## Features
+
+- **Three prayer tabs** — Regina Cæli, Angelus, Memorare.
+- **Liturgically-aware default tab** — on first load, the widget picks the appropriate prayer for the current season:
+  - **Eastertide** (Easter Sunday → Pentecost, inclusive) → Regina Cæli
+  - **Rest of the year** → Angelus
+  - Easter is computed per year using Gauss's algorithm; Pentecost is Easter + 49 days.
+- **Remembers your choice** — once you click a tab, that selection is saved to `localStorage` and used on every subsequent load, overriding the seasonal default. Memorare is only ever shown by explicit click.
+- **Reset to seasonal auto-pick** — open Übersicht's Debug Console and run `localStorage.removeItem('oratio.tab')`, then refresh widgets.
+
 ## Install
 
 1. Download or clone this repo.
