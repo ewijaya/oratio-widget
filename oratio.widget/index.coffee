@@ -92,15 +92,53 @@ render: (output) -> """
 """
 
 afterRender: (domEl) ->
+  # Gauss's Easter algorithm — returns [month, day] (month 3 or 4) for given year
+  computeEaster = (year) ->
+    a = year %% 19
+    b = Math.floor(year / 100)
+    c = year %% 100
+    d = Math.floor(b / 4)
+    e = b %% 4
+    f = Math.floor((b + 8) / 25)
+    g = Math.floor((b - f + 1) / 3)
+    h = (19 * a + b - d - g + 15) %% 30
+    i = Math.floor(c / 4)
+    k = c %% 4
+    l = (32 + 2 * e + 2 * i - h - k) %% 7
+    m = Math.floor((a + 11 * h + 22 * l) / 451)
+    month = Math.floor((h + l - 7 * m + 114) / 31)
+    day = ((h + l - 7 * m + 114) %% 31) + 1
+    [month, day]
+
+  # Default tab by liturgical season: Regina Cæli during Eastertide (Easter → Pentecost inclusive), else Angelus
+  seasonalDefault = ->
+    today = new Date()
+    [em, ed] = computeEaster(today.getFullYear())
+    easter = new Date(today.getFullYear(), em - 1, ed)
+    pentecost = new Date(easter)
+    pentecost.setDate(easter.getDate() + 49)
+    if today >= easter and today <= pentecost then 'regina' else 'angelus'
+
+  activate = (target) ->
+    tabs.forEach (t) -> t.classList.remove('active')
+    panels.forEach (p) -> p.classList.remove('active')
+    domEl.querySelector(".tab[data-target='#{target}']")?.classList.add('active')
+    domEl.querySelector('#' + target)?.classList.add('active')
+
   tabs = domEl.querySelectorAll('.tab')
   panels = domEl.querySelectorAll('.panel')
+
+  # Pick initial tab: saved choice wins; otherwise seasonal default
+  saved = null
+  try saved = localStorage.getItem('oratio.tab')
+  initial = saved or seasonalDefault()
+  activate(initial)
+
   tabs.forEach (tab) ->
     tab.addEventListener 'click', ->
       target = tab.getAttribute('data-target')
-      tabs.forEach (t) -> t.classList.remove('active')
-      panels.forEach (p) -> p.classList.remove('active')
-      tab.classList.add('active')
-      domEl.querySelector('#' + target).classList.add('active')
+      activate(target)
+      try localStorage.setItem('oratio.tab', target)
 
 style: """
   top: 60px
